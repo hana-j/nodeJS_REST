@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('../part/head') %>
+  </head>
+  <script>
+    //수정 버튼 클릭시 모달 스타트
+    function modal_edit() {
+        $('#editModal').modal('show');
+    }
+
+    function modal_edit_ok() {
+        $.ajax({
+        type: "POST",
+        url: '/pwCheck',
+        data: {
+            password :$("#borderPwd").val()
+        },
+        success: function(post) {
+          if(post){
+            location.href="/posts/<%= post._id %>/edit";
+          }else{
+            alert('비밀번호가 일치하지 않습니다.')
+          }
+        }
+    });
+  }
+    //삭제 버튼 클릭시 모달 스타트
+    function modal_del() {
+        $('#delModal').modal('show');
+    }
+    function modal_del_ok() {
+     const id = $("#id").val();
+     const password = $("#borderPwd1").val();
+      $.ajax({
+          type: "POST",
+          url:  '/pwCheck1',
+          data: { 
+            password :password,
+            id:id
+          },
+          success: function(result, not) {
+            if (result) {
+              location.href="/posts"
+              
+            }
+          }
+        });
+    }
+  </script>
+  <body>
+    <%- include('../part/nav') %>
+
+    <div class="container mb-3">
+
+      <input type="hidden" id="id" value="<%=post._id%>">
+      <input type="hidden" id="password" value="<%=post.password%>">
+         <div class="card" style="margin-bottom: 10px;">
+        <h5 class="card-header p-2">제목 : <%= post.title %></h5>
+        <h5 class="card-header p-2">작성자 : <%= post.writer %></h5>
+        <div class="row"> 
+
+          <div class="col-md-7 col-lg-8 col-xl-9 order-sm-2 order-md-1"> 
+            <div class="post-body p-2" style="margin-bottom:10em;"><%= post.content %></div>
+      
+              <div><span>작성날짜</span> : <span data-date="<%= post.createdAt %>"></span></div> 
+              <% if(post.updatedAt) { %>
+                <div><span>수정날짜</span> : <span data-date="<%= post.updatedAt %>"></span></div> 
+              <% } %>
+          </div>
+
+        </div>
+      </div>
+
+      <class="mt-3" style="margin-left: 80%; ">
+        <a class="btn btn-primary" href="/posts" style="background-color: #85AF4B; border:none;">리스트</a>
+        <!-- <button class="btn btn-primary" type="submit" onclick="modal_edit()">수정</button> -->
+        <a class="btn btn-primary"   href="#" onclick="modal_edit()"style="background-color: #85AF4B;border:none"> 수정</a>
+        
+            <a class="btn btn-primary"  href="javascript:void(0)" onclick="modal_del()" style="background-color: #85AF4B; border:none;">삭제</a>
+
+      </div>
+      <!-- 수정 비밀번호 확인모달-->
+    <div class="modal text-left" id="editModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="cartModalLabel">알림</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+            비밀번호를 입력하세요
+            </div>
+            <input type="text" class="inputPwd" id="borderPwd" type="number" placeholder="숫자만입력하세요" />
+            <div class="modal-footer">
+            <button type="submit" class="btn btn-sparta" onclick='modal_edit_ok()'>
+                확인
+            </button>
+            <button type="button" class="btn btn-outline-sparta" data-dismiss="modal">
+                취소
+            </button>
+            </div>
+        </div>
+        </div>
+    </div>
+      <!--삭제  확인모달-->
+      <div class="modal text-left" id="delModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+          <h5 class="modal-title" id="cartModalLabel">알림</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+          </div>
+          <div class="modal-body">
+          비밀번호를 입력하세요
+          </div>
+          <input type="text" class="inputPwd" id="borderPwd1" type="number" placeholder="숫자만입력하세요" />
+          <div class="modal-footer">
+          <button type="submit" class="btn btn-sparta" onclick='modal_del_ok()'>
+              확인
+          </button>
+          <button type="button" class="btn btn-outline-sparta" data-dismiss="modal">
+              취소
+          </button>
+          </div>
+      </div>
+      </div>
+  </div>
+  </body>
+</html>
