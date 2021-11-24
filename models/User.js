@@ -45,7 +45,7 @@ userSchema.path('password').validate(function (v) {
 
 userSchema.methods.authenticate = function (password){
     const user = this;
-    return bcrypt.compareSync(password, user.password);
+    return password, user.password;
 }
 const User = mongoose.model('user', userSchema);
 module.exports = User;
