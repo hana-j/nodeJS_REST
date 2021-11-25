@@ -48,7 +48,7 @@ app.use((req, res, next)=>{
 app.use('/', require('./routes'));
 app.use('/posts', require('./routes/posts'));
 app.use('/users', require('./routes/users'));
-
+app.use('/comments', require('./routes/comment'));
 
 
 

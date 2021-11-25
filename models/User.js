@@ -28,8 +28,27 @@ const passwordValid = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,16}$/;
 const passwordErrorMsg = '4자리이상 아이디와 겹치지 않는 숫자와 문자조합으로 작성해주세요';
 userSchema.path('password').validate(function (v) {
     const user = this;  //this는 user model이다.
-
-    if(!user.password.split().indexOf(user.nickname)){
+    const arrPw = user.password.split("");
+    const arrId = user.nickname.split("");
+    console.log(arrPw, arrId);
+    const valid = false;
+    if(arrPw.length == arrId.length ){
+        for(let i = 0 ;i <arrId.length; i++){
+            if(arrId[i]===arrPw[i]){
+                valid ==true;
+                return valid;
+            }
+        }
+        
+    }if(arrPw.length !== arrId.length ){
+        for(let i = 0 ;i <arrId.length; i++){
+            if(arrId[i]===arrPw[i]){
+                valid ==true;
+                return valid;
+            }
+        }
+    }
+    if(valid){
         user.invalidate('password', passwordErrorMsg);
     }
     if(!passwordValid.test(user.password)){

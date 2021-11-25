@@ -50,7 +50,7 @@ module.exports = () =>{
 */
 //serialize && deserialize =>패스포트가 세션을 사용하기 위해 필요한 코드 
 passport.serializeUser((user, done)=>{
-    done(null, user.id);
+    done(null, user.id);     //userid만 담아서 session에 값을 담아준다.
 });
 passport.deserializeUser((id, done)=>{
     User.findOne({_id:id}, (err, user)=>{
@@ -61,7 +61,7 @@ passport.deserializeUser((id, done)=>{
 //패스포트 사용자 지정
 passport.use('local',
     new LocalStrategy({
-        usernameField:'nickname',
+        usernameField:'nickname', //req.body.nickname의 이름과 같게 설정해주어야한다.
         passwordField:'password',
         passReqToCallback:true
     },
@@ -71,12 +71,13 @@ passport.use('local',
         .select({password:1})
         .exec((err, user)=>{
             if(err) return done(err);
-            if(user && user.authenticate(password)){
-                return done(null, user);
+            if(user && password ==user.authenticate(password)){
+                return done(null, user);                  //성공시 done(null, 유저객체)
             }
             else{
                 req.flash('nickname', nickname);
                 req.flash('errors', {login: '아이디 또는 비밀번호가 일치하지 않습니다.'});
+                return done(null, false);
             }
         })
     }

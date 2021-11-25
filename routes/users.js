@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const AuthToken = require('../controller/AuthTokenController');
 const router = express.Router();
+const util = require('../util');
 
 //authToken
 router.post('/auth/tokens', AuthToken.create);
@@ -14,15 +15,15 @@ router.get('/users', (req, res)=>{
     res.render('users/join', {user:user, errors:errors});
 })
 //회원가입
-router.post('/', (req,res)=>{
+router.post('/join',  (req,res)=>{
     console.log(req.body.nickname, req.body.password);
     User.create(req.body, function(err, user){
         if(err){
             req.flash('user',req.body);
-            req.flash('errors', parseError(err));   //error 형식 맞춰주는 함수 이용 => 따로 공부하기 
+            req.flash('errors', util.parseError(err));   //error 형식 맞춰주는 함수 이용 => 따로 공부하기 
             return res.redirect('/users/users')
         }
-        res.redirect('/login'); //성공시 로그인 페이지로 
+        res.redirect('/users/login'); //성공시 로그인 페이지로 
     });
 });
 // 로그인페이지
@@ -55,35 +56,22 @@ router.post('/auth',
       }
       else {
         req.flash('errors',errors);
-        res.redirect('/login');
+        res.redirect('/users/login');
       }
     },
-    passport.authenticate('local', {
+    passport.authenticate('local', { //여기에서 localStrategy가 있는 파일을 찾아감 => config/passport.js
       successRedirect : '/posts',
-      failureRedirect : '/login'
+      failureRedirect : '/users/login'
     }
   ));
   //로그아웃
-  router.get('/logout', function(req, res) {
+  router.get('/logout',function(req, res) {
+    console.log(req.user);
     req.logout();
-    res.redirect('/');
+    req.session.destroy();
+    res.redirect('/posts');
   });
 
-//parseError 함수
-function parseError(errors){
-    console.log(errors)
-    const parsed = {};
-    if(errors.name =='ValidationError'){
-        for(let name in errors.errors){
-            let ValidationError = errors.errors[name];
-            parsed[name] = {message:ValidationError.message};
-        }
-    }else if(errors.code =='11000' && errors.errmsg.indexOf('nickname') > 0){
-        parsed.nickname = {message : '이미 존재하는 아이디 입니다.'};
-    }else{
-        parsed.unhandled = JSON.stringify(errors);
-    }
-    return parsed;
-}
+
 
 module.exports = router;
