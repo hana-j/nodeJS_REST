@@ -8,13 +8,14 @@
 
     <div class="container mb-3">
 
-      <input type="hidden" id="id" value="<%=post._id%>">
+      <input type="hidden" id="postId" value="<%=post._id%>">
       <input type="hidden" id="password" value="<%=post.password%>">
+      <input type ="hidden" id="author" value="<%=post.author%>">
          <div class="card" style="margin-bottom: 10px;">
         <h5 class="card-header p-2">제목 : <%= post.title %></h5>
-        <h5 class="card-header p-2">작성자 : <%= post.author ? post.author.username : "" %></h5>
+        <h5 class="card-header p-2">작성자 : <%= post.author? post.author.nickname : "" %></h5>
         <div class="row"> 
-
+          <input type="hidden" id="postId" value="<%= post._id %>">
           <div class="col-md-7 col-lg-8 col-xl-9 order-sm-2 order-md-1"> 
             <div class="post-body p-2" style="margin-bottom:10em;"><%= post.content %></div>
       
@@ -43,13 +44,45 @@
           <% comments.forEach(function(comment) { %> 
             <div class="border-top pt-1 pb-1">
               <div class="row">
-                <div class="col-3 col-md-2 col-lg-1 pl-4"><%= comment.author.username %></div> 
+                <div class="col-3 col-md-2 col-lg-1 pl-4"><%= comment.author? comment.author.nickname : "" %></div> 
                 <div class="col-9 col-md-10 col-lg-11">
                   <div class="comment-show">
                     <div class="comment-text mb-3"><%= comment.text %></div> 
+                                          <!-- 모달을 열기 위한 버튼 -->
+                      
                     <small class="d-block">
                       (작성시간: <span data-date-time="<%= comment.createdAt %>"></span>) 
                     </small>
+                    <% if(isAuthenticated && comment.author && currentUser.id == comment.author.id){ %>
+                      <input type="hidden" id="commentId" value="<%= comment._id %>">
+                    <button type="button" class="btn btn-primary btn-lg" style="background-color: steelblue;width:8%;height:2em; border:none" data-toggle="modal" data-target="#myModal">
+                      <span style="font-size: 0.8em;">수정</span>
+                     </button>
+                     <button type="button" class="btn btn-primary btn-lg" style="background-color: steelblue;width:8%;height:2em; border:none" onclick="commentDel()" >
+                      <form action="/comments/<%= comment._id %>?postId=<%= post._id %>&_method=delete" method="post" class="d-inline">
+                        <a href="javascript:void(0)" style="color:white; "onclick="confirm('삭제하시겠습니끼?')?this.parentElement.submit():null;">삭제</a>
+                      </form>
+                     </button>
+                     <%}%>
+                     <!-- 모달 영역 -->
+                     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                       <div class="modal-dialog" role="document">
+                         <div class="modal-content">
+                           <div class="modal-header">
+                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                 aria-hidden="true">×</span></button>
+                         
+                           </div>
+                           <div class="modal-body">
+                            <input type="text" value="" id="commentEdit" name="commentEdit"/>
+                           </div>
+                           <div class="modal-footer">
+                             <button type="button" class="btn btn-primary" onclick="editComment()" style="background-color:steelblue; border:none">수정</button>
+                             <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
                   </div>
                 </div>
               </div>
@@ -59,17 +92,47 @@
       <% } %>
 
       <div class="mt-3">
+       
         <form action="/comments?postId=<%= post._id %>" method="post">
+          
+          
             <div class="row">
               <div class="col-8">
                 <textarea name="text" rows="2" class="form-control"><%= commentForm.form.text %></textarea>
               </div>
               <div class="col-4">
-                <button type="submit" onclick="alertLogin()" class="btn btn-primary h-100 mr-2">댓글작성</button>
+                <button type="submit" onclick="alertLogin()" class="btn btn-primary h-100 mr-2" style="background-color:steelblue; border:none">댓글작성</button>
               </div>
             </div>
         </form>
         </div>
     </div>
+    <script>
+      function editComment() {
+        const post = $("#postId").val();
+        const commentId = $("#commentId").val();
+        const text= $("#commentEdit").val();
+        const author = $("#author").val();
+        $.ajax({
+          type: "post",
+          url: "/comments/edit",
+          data: {
+            author:author,
+            text: text,
+            commentId:commentId,
+            post:post
+          },
+          success: function() {
+            alert('수정되었습니다.');
+            window.location.replace("/posts/"+post);
+            
+          },
+          error: function (error) {
+            alert(error.responseJSON.errorMessage);
+          },
+        });
+      }
+    
+    </script>
   </body>
 </html>
