@@ -11,4 +11,12 @@ module.exports = {
         }
         return true;
     },
+    isPasswordConfirm : (pwd, pwdConfirm) =>{
+        for(let i = 0; i<pwd.length; i++){
+            if(pwd[i] !== pwdConfirm[i] || pwd.length !== pwdConfirm.length){
+                return false;
+            } 
+        }
+        return true;
+    }
 };

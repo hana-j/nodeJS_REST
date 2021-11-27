@@ -1,7 +1,7 @@
 {
   "scripts": {
     "prettify": "prettier --write *.js **/*.js",
-    "test":"jest"
+    "test": "jest"
   },
   "dependencies": {
     "alert": "^5.0.10",
@@ -21,6 +21,7 @@
   "devDependencies": {
     "express": "^4.17.1",
     "jest": "^27.3.1",
+    "node-mocks-http": "^1.11.0",
     "prettier": "^2.5.0"
   }
 }
