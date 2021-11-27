@@ -48,11 +48,11 @@
                 <div class="col-9 col-md-10 col-lg-11">
                   <div class="comment-show">
                     <div class="comment-text mb-3"><%= comment.text %></div> 
-                                          <!-- 모달을 열기 위한 버튼 -->
                       
                     <small class="d-block">
                       (작성시간: <span data-date-time="<%= comment.createdAt %>"></span>) 
                     </small>
+                    
                     <% if(isAuthenticated && comment.author && currentUser.id == comment.author.id){ %>
                       <input type="hidden" id="commentId" value="<%= comment._id %>">
                     <button type="button" class="btn btn-primary btn-lg" style="background-color: steelblue;width:8%;height:2em; border:none" data-toggle="modal" data-target="#myModal">
@@ -64,6 +64,7 @@
                       </form>
                      </button>
                      <%}%>
+                     
                      <!-- 모달 영역 -->
                      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                        <div class="modal-dialog" role="document">
@@ -89,13 +90,10 @@
             </div>
           <% }) %>
         </div>
+        
       <% } %>
-
       <div class="mt-3">
-       
         <form action="/comments?postId=<%= post._id %>" method="post">
-          
-          
             <div class="row">
               <div class="col-8">
                 <textarea name="text" rows="2" class="form-control"><%= commentForm.form.text %></textarea>
@@ -107,6 +105,7 @@
         </form>
         </div>
     </div>
+      
     <script>
       function editComment() {
         const post = $("#postId").val();

@@ -7,20 +7,20 @@ const util = require('../util');
 
 //댓글작성
 router.post('/', util.isLoggedin, checkPostId, (req, res) => {
-    if (!req.user) {
-    } else {
+    
+  
         const post = res.locals.post;
-        req.body.author = req.user.nickname;
+        req.body.author = req.user._id;
         req.body.post = post._id;
 
         Comment.create(req.body, (err) => {
             if (err) {
                 req.flash('commentForm', { _id: null, form: req.body });
-                // req.flash('commentError', { _id: null, errors: util.parseError(err) })
+                req.flash('commentError', { _id: null, errors: util.parseError(err) })
             }
             return res.redirect('/posts/' + post._id);
         });
-    }
+    
 });
 //수정
 router.post('/edit', util.isLoggedin, checkPermission, checkPostId, function(req, res)  {
