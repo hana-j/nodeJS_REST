@@ -14,20 +14,20 @@ router.get('/', function (req, res) {
         })
 })
 //New post
-router.get('/new', function (req, res) {
+router.get('/new', util.isLoggedin,function (req, res) {
     res.render('posts/new')
 })
 
 //write
 router.post('/', util.isLoggedin, function (req, res) {
-    if (!req.user) {
-    } else {
-        req.body.author = req.user._id
-        Post.create(req.body, function (err, post) {
-            if (err) return res.json(err)
-            res.redirect('/posts')
-        })
-    }
+
+
+    req.body.author = req.user._id
+    Post.create(req.body, function (err, post) {
+        if (err) return res.json(err)
+        res.redirect('/posts')
+    })
+
 })
 
 //상세페이지

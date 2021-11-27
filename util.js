@@ -19,16 +19,6 @@ util.parseError = function (errors) {
     return parsed;
 };
 
-// util.isLoggedin = function(req, res, next){
-//     if(!req.isAuthenticated()){
-//         //req.flash('errors', {login :'로그인 먼저 해주세요'});
-//         res.status(403).send('로그인필요').redirect('/users/login');
-//         //res.redirect('/users/login');
-
-//     }else{
-//         next();
-//     }
-// }
 util.isLoggedin = function (req, res, next) {
     if (req.isAuthenticated()) {
         next();

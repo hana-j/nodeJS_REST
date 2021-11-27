@@ -15,4 +15,12 @@ module.exports = {
         }
         return true;
     },
+    isExistNickname : (exist, newUser)=>{
+        for(let i = 0 ;i <exist.length; i++){
+            if(exist[i]===newUser[i] && exist.length === newUser.length){
+                return false;
+            }
+        }
+        return true;
+    }
 };
