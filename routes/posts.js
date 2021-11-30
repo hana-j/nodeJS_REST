@@ -43,7 +43,7 @@ router.get('/:id', function (req, res) {
             select: 'nickname',
         }),
         Comment.find({ post: req.params.id })
-            .sort('createdAt')
+            .sort('-createdAt')
             .populate({ path: 'author', select: 'nickname' }),
     ])
         .then(([post, comments]) => {
