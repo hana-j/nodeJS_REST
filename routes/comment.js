@@ -23,18 +23,16 @@ router.post('/', util.isLoggedin, checkPostId, (req, res) => {
     
 });
 //수정
-router.post('/edit', util.isLoggedin, checkPermission, checkPostId, function(req, res)  {
-    Comment.findByIdAndUpdate({ _id: req.body.commentId }, { $set: { post: req.body.post._id, author: req.body.author._id, text: req.body.text, createdAt:Date.now() } },
-        function (err) {
-            if (err) { return res.send({ errorMessage: "수정중 오류가 발생했습니다." }) }
-            
-        }
-        
-    );
-    return res.redirect('/posts/'+req.body.post)
-}
+router.post('/edit/:id', util.isLoggedin, checkPermission, checkPostId, function(req, res)  {
+console.log(req.params.id);
+console.log(req.body.text)
+ Comment.findByIdAndUpdate({_id:req.params.id}, { $set: { text: req.body.text }})
+ .exec(function (err){
+    if (err) { return res.send({ errorMessage: "수정중 오류가 발생했습니다." }) }
+    res.redirect('/posts/'+req.body.post);
+ })
+});
 
-);
 router.delete('/:id', util.isLoggedin, checkPermission, checkPostId,function(req, res){
     const post = res.locals.post;
     Comment.findOneAndRemove({_id:req.params.id}, function(err, comment){
