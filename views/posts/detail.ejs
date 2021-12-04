@@ -3,6 +3,35 @@
   <head>
     <%- include('../part/head') %>
   </head>
+  <script>
+    
+    function editComment(commentId) {  //ㅁㅐ개변수로 다른 id를 찍는데 왜 값은 ...? 같은걸 받아오지 ?
+      const text = prompt();
+      const post = $("#postId").val();
+      //const commentId = $('#commentId').val();
+      const author = $("#author").val();
+      
+      $.ajax({
+        type: "post",
+        url: `/comments/edit/${commentId}?postId=${post}`,
+        data: {
+          author:author,
+          text: text,
+          //commentId:commentId,
+          post:post
+        },
+        success: function() {
+          alert('수정되었습니다.');
+          window.location.replace("/posts/"+post);
+          
+        },
+        error: function (error) {
+          alert(error.responseJSON.errorMessage);
+        },
+      });
+    }
+  
+  </script>
   <body>
     <%- include('../part/nav') %>
 
@@ -46,19 +75,19 @@
               <div class="row">
                 <div class="col-3 col-md-2 col-lg-1 pl-4"><%= comment.author? comment.author.nickname : "" %></div> 
                 <div class="col-9 col-md-10 col-lg-11">
-                  <div class="comment-show">
+                  <div class="comment-show" >
+                  
                     <div class="comment-text mb-3"><%= comment.text %></div> 
-                      
+                    
                     <small class="d-block">
                       (작성시간: <span id="date" data-date-time="<%= comment.createdAt %>"></span>) 
                     </small>
                     
                     <% if(isAuthenticated && comment.author && currentUser.id == comment.author.id){ %>
-                    
-                    <button type="button" class="btn btn-primary btn-lg"  style="background-color: steelblue;width:8%;height:2em; border:none" data-toggle="modal" data-target="#myModal">
-                      <span style="font-size: 0.8em;">수정</span>
-                     </button>
-                     
+                      <button type="button" class="btn btn-primary btn-lg" style="background-color: steelblue;width:8%;height:2em; border:none"  >
+                        <a href="javascript:void(0)" style="color:white; "onclick="editComment('<%= comment._id%>')">수정</a>
+                        <input type="hidden" id="commentId" value="<%= comment._id%>">
+                      </button>
                      <button type="button" class="btn btn-primary btn-lg" style="background-color: steelblue;width:8%;height:2em; border:none" onclick="commentDel()" >
                       <form action="/comments/<%= comment._id %>?postId=<%= post._id %>&_method=delete" method="post" class="d-inline">
                         <a href="javascript:void(0)" style="color:white; "onclick="confirm('삭제하시겠습니끼?')?this.parentElement.submit():null;">삭제</a>
@@ -67,27 +96,7 @@
                      
                      <%}%>
                      
-                     <!-- 모달 영역 -->
-                     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                       <div class="modal-dialog" role="document">
-                         <div class="modal-content">
-                           <div class="modal-header">
-                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                 aria-hidden="true">×</span></button>
-                         
-                           </div>
-                           <div class="modal-body">
-                            <input type="text" id="commentEdit" name="commentEdit"/>
-                           </div>
-                           <div class="modal-footer">
-                        
-                    
-                             <button type="button" class="btn btn-primary" onclick="editComment('<%=comment._id%>')" style="background-color:steelblue; border:none">수정</button>
-                             <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
-                           </div>
-                         </div>
-                       </div>
-                     </div>
+                     
                   </div>
                 </div>
               </div>
@@ -110,35 +119,6 @@
         </div>
     </div>
       
-    <script>
-     
-      function editComment(id) {
-        alert(id)
-        const post = $("#postId").val();
-        //const commentId = $("#Pid").val();
-        const text= $("#commentEdit").val();
-        const author = $("#author").val();
     
-        $.ajax({
-          type: "post",
-          url: `/comments/edit/${id}?postId=${post}`,
-          data: {
-            author:author,
-            text: text,
-            //commentId:commentId,
-            post:post
-          },
-          success: function() {
-            alert('수정되었습니다.');
-            window.location.replace("/posts/"+post);
-            
-          },
-          error: function (error) {
-            alert(error.responseJSON.errorMessage);
-          },
-        });
-      }
-    
-    </script>
   </body>
 </html>
