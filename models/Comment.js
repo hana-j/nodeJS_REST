@@ -7,7 +7,7 @@ const commentSchema = mongoose.Schema({
         ref: 'user',
         required: true,
     },
-    comment: { type: mongoose.Schema.Types.ObjectId, ref: 'comment' },
+    //comment: { type: mongoose.Schema.Types.ObjectId, ref: 'comment' },
     text: { type: String, required: [true, '댓글을 달아주세요'] },
     createdAt: { type: Date, default: Date.now },
 });
